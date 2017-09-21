@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<title>Battle Map Creator</title>
+
+        <link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/bootstrap-alert.js"></script>
+		<script type="text/javascript" src="js/battlemap.js"></script>
+
+	</head>
+
+<body>
+    <div class="row" style="margin: 10 0 5 0">
+        <div class="col-md-12" id="alert_div">
+
+        </div>
+    </div>
+	<div class="row" style="margin: 10 0 5 0">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Configuration
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="form_columns">How many columns would you like on your map?</label>
+                        <input type="text" class="form-control" value="10" id="form_columns">
+                    </div>
+                    <div class="form-group">
+                        <label for="form_rows">How many rows would you like on your map?</label>
+                        <input type="text" class="form-control" value="10" id="form_rows">
+                    </div>
+                    <div class="form-group">
+                        <label for="grid_input">Or put in previous grid data. This will be in JSON string format.</label>
+                        <textarea id="grid_input" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix">
+                    <form class="form-inline">
+                        <input type="button" class="btn btn-default col-sm-3" value="Show Grid" id="button_show_grid">
+                        <input type="button" class="btn btn-default col-sm-3" value="Save Grid" id="button_save_grid">
+                        <input type="text" class="form-control col-sm-6" value="" id="input_grid_name" placeholder="Grid Name">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Editable Map Grid
+                </div>
+                <div class="panel-body">
+                    <div id="grid"></div>
+                </div>
+            </div>
+        </div>
+	</div>
+
+    <div class="row" style="margin: 10 0 5 0">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Saved Grids
+                </div>
+                <div class="panel-body" id="saved_grids_div">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Generated RPoL Table
+                </div>
+                <div class="panel-body">
+                    <pre id="generated_grid"></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Map data JSON string. Save this if your browser doesn't support local storage.
+                </div>
+                <div class="panel-body">
+                    <code id="grid_data"></code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<script>
+		$(document).ready(function() {
+			var map = BattleMap;
+
+			$("#button_show_grid").bind("click", $.proxy(map.showGrid, map));
+            $("#button_save_grid").bind("click", $.proxy(map.saveGrid, map));
+		});
+	</script>
+
+</body>
+
+</html>
