@@ -230,14 +230,34 @@ var BattleMap = {
             this.alert("You haven't generated a grid to save.");
             return;
         }
-        if (!Storage) {
+        if (typeof(Storage) == "undefined") {
             this.alert("Your browser doesn't support local storage.");
             return;
         }
+		if ($("#input_grid_name").val() == "") {
+			this.alert("You must supply a name for the grid.");
+			return;
+		}
 
-        var db = document.localStorage;
-         
+        if (localStorage.getItem("savedGrids") == null) localStorage.setItem("savedGrids", "[]");
+		var saved = $.parseJSON(localStorage.getItem("savedGrids"));
+		var index = this.gridExists($("#input_grid_name").val(), saved);
+		if (index > -1) {
+			saved.splice(index, 1);
+		}
+
+		saved.push({name: $("#input_grid_name").val(), grid: this.gridData.data});
+		localStorage.setItem("savedGrids", JSON.stringify(saved));
+		this.alert("You have saved grid " + $("#input_grid_name").val());
     },
+
+	gridExists: function(needle, haystack) {
+		var index = -1;
+		haystack.forEach(function(grid) {
+			if (grid.name == needle) index = haystack.indexOf(grid);
+		});
+		return index;
+	},
 
     alert: function(msg) {
         var div = $("#alert_div");
