@@ -246,9 +246,10 @@ var BattleMap = {
 			saved.splice(index, 1);
 		}
 
-		saved.push({name: $("#input_grid_name").val(), grid: this.gridData.data});
+		saved.push({name: $("#input_grid_name").val().replace(/\s/g, ""), grid: this.gridData.data});
 		localStorage.setItem("savedGrids", JSON.stringify(saved));
-		this.alert("You have saved grid " + $("#input_grid_name").val());
+		this.alert("You have saved grid " + $("#input_grid_name").val(), "info");
+		this.getSaved();
     },
 
 	gridExists: function(needle, haystack) {
@@ -259,11 +260,59 @@ var BattleMap = {
 		return index;
 	},
 
-    alert: function(msg) {
+	getSaved: function() {
+		if (typeof(Storage) == "undefined") return;
+		if (localStorage.getItem("savedGrids") == null) return;
+
+		var obj = this;
+		var element = $("#saved_grids_table");
+		var html = "";
+		element.empty();
+		var saved = $.parseJSON(localStorage.getItem("savedGrids"));
+		saved.forEach(function(grid) {
+			html = "<tr><td>" + grid.name + "</td>";
+			html += "<td><a href='#' id='load_" + grid.name + "'>load</a></td>";
+			html += "<td><a href='#' id='delete_" + grid.name + "'>delete</a></td></tr>";
+			element.append(html);
+			$("#load_" + grid.name).bind("click", {name: grid.name}, $.proxy(obj.loadGrid, obj));
+			$("#delete_" + grid.name).bind("click", {name: grid.name}, $.proxy(obj.deleteGrid, obj));
+		});
+	},
+
+	deleteGrid: function(event) {
+		var grids = $.parseJSON(localStorage.getItem("savedGrids"));
+		var index = this.gridExists(event.data.name, grids);
+		if (index < 0) {
+			this.alert("That grid doesn't exist in the database.");
+			return;
+		}
+		grids.splice(index, 1);
+		localStorage.setItem("savedGrids", JSON.stringify(grids));
+		this.getSaved();
+	},
+
+	loadGrid: function(event) {
+		this.gridData.data = [];
+		var grids = $.parseJSON(localStorage.getItem("savedGrids"));
+		var index = this.gridExists(event.data.name, grids);
+		if (index < 0) {
+			this.alert("That grid doesn't exist in the database.");
+			return;
+		}
+		$("#grid_input").val(JSON.stringify({data: grids[index].grid}));
+		this.showGrid();
+	},
+
+    alert: function(msg, type) {
+		type = type == null ? "warning" : "info";
         var div = $("#alert_div");
-        var html = "<div class='alert alert-dismissible alert-warning'>";
+        var html = "<div class='alert alert-dismissible alert-" + type + "'>";
         html += "<button type='button' class='close' data-dismiss='alert'>&times;</button>";
-        html += "<h4>Warning!</h4>";
+		if (type == "warning"){
+			html += "<h4>Warning!</h4>";
+		} else {
+			html += "<h4>Info</h4>";
+		}
         html += "<p>" + msg + "</p>";
         html += "</div>";
         div.append(html);

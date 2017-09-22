@@ -44,16 +44,42 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Editable Map Grid
                 </div>
                 <div class="panel-body">
+					<p>This is an editable version of your map. This will not reflect in the data below until you click "Generate Grid".</p>
                     <div id="grid"></div>
                 </div>
             </div>
         </div>
+		<div class="col-md-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Help
+				</div>
+				<div class="panel-body">
+					<p>
+						<strong>Show Grid:</strong> Takes the # rows and # columns and creates an editable grid of
+						that size. Unless there is data in the previous grid data textbox. In which case it creates
+						an editable grid from that data.
+					</p>
+					<p>
+						<strong>Generate Grid:</strong> Uses the editable grid and creates both the table code to
+						be pasted into RPoL to show your battlemap. It also creates the JSON data that you can
+						copy and save somewhere else to use later.
+					</p>
+					<p>
+						<strong>Save Grid</strong> Saves the generated grids data to the browser's local storage. it
+						saves it with the name given in the text box next to it. If you put spaces in your name the
+						application removes them before saving.	Please, note that the save function doesn't use the
+						editable grid it uses the generated data. Also, if your browser doesn't support local storage
+						this functionality will not work.
+				</div>
+			</div>
+		</div>
 	</div>
 
     <div class="row" style="margin: 10 0 5 0">
@@ -63,6 +89,9 @@
                     Saved Grids
                 </div>
                 <div class="panel-body" id="saved_grids_div">
+					<p>This is a list of grids saved to your local storage.</p>
+					<table class="table table-striped" id="saved_grids_table">
+					</table>
                 </div>
             </div>
         </div>
@@ -72,6 +101,7 @@
                     Generated RPoL Table
                 </div>
                 <div class="panel-body">
+					<p>This is the text you should paste into RPoL to display your battlemap.</p>
                     <pre id="generated_grid"></pre>
                 </div>
             </div>
@@ -92,6 +122,7 @@
 	<script>
 		$(document).ready(function() {
 			var map = BattleMap;
+			map.getSaved();
 
 			$("#button_show_grid").bind("click", $.proxy(map.showGrid, map));
             $("#button_save_grid").bind("click", $.proxy(map.saveGrid, map));
